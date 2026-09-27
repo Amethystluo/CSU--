@@ -1,0 +1,82 @@
+<view class="pick-page">
+  <view class="pick-top">
+    <view class="pick-back" bindtap="cancel">‹ 取消</view>
+    <view class="pick-title">{{title}}</view>
+    <view class="pick-zoom-tools">
+      <view class="pick-zoom-btn" bindtap="zoomOut">−</view>
+      <view class="pick-zoom-val">{{scaleLabel}}</view>
+      <view class="pick-zoom-btn" bindtap="zoomIn">＋</view>
+    </view>
+  </view>
+
+  <view class="pick-hint">
+    {{hint}}<text class="pick-hint-sub" wx:if="{{canPan}}">　·　可拖动地图移动视野</text>
+  </view>
+
+  <view class="pick-map" id="pickMap"
+        bindtouchstart="onTouchStart"
+        catchtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd">
+    <view class="pick-zoom" style="transform:translate({{tx}}px,{{ty}}px) scale({{scale}})">
+      <image class="pick-img" src="/assets/campus-map.svg" mode="aspectFit" />
+      <canvas canvas-id="pickCanvas" id="pickCanvas" class="pick-canvas"></canvas>
+    </view>
+    <view class="pick-tools">
+      <view class="pick-tool" bindtap="resetZoom">全览</view>
+      <view class="pick-tool" bindtap="resetView">复位</view>
+    </view>
+    <view class="pick-legend">
+      <view class="pick-legend-bar"></view>
+      <view class="pick-legend-text">占用率：越红越堵</view>
+      <view class="pick-legend-row"><view class="pick-legend-dash"></view><text>已封闭</text></view>
+    </view>
+    <view class="pick-cross" wx:if="{{selection}}">
+      <view class="pick-cross-title">{{selection.label}}</view>
+      <view class="pick-cross-detail" wx:if="{{selection.detail}}">{{selection.detail}}</view>
+      <view class="pick-cross-detail" wx:elif="{{selection.snapMeters !== undefined}}">距最近路口约 {{selection.snapMeters}} 米</view>
+    </view>
+  </view>
+
+  <!-- 底部确认栏 -->
+  <view class="pick-bottom">
+    <block wx:if="{{!selection}}">
+      <view class="pick-empty">还没有选中任何位置，点击上方地图开始</view>
+    </block>
+    <block wx:else>
+      <view class="pick-sel">{{selection.label}}</view>
+      <view class="pick-actions">
+        <button class="mini" bindtap="cancel">取消</button>
+        <button class="mini mini-active" bindtap="confirm">{{confirmText}}</button>
+      </view>
+    </block>
+  </view>
+
+  <!-- 上报类型面板。
+       遮罩与表单里的「关闭」都只收起表单（closeSheet），不退出点选页 ——
+       否则用户在整张地图上随便点一下就把整个页面退掉了，还得重新进来选路。
+       真要退出，用左上角的「‹ 取消」或底部栏的「取消」。 -->
+  <view class="sheet-mask" wx:if="{{sheetVisible}}" bindtap="closeSheet"></view>
+  <view class="sheet" wx:if="{{sheetVisible}}">
+    <view class="sheet-head">
+      <view class="sheet-title">这是什么情况？</view>
+      <view class="sheet-loc">{{selection.label}} · {{selection.detail}}</view>
+    </view>
+    <view class="sheet-cats">
+      <view class="sheet-cat {{category===item.key?'sheet-cat-on':''}}"
+            wx:for="{{categories}}" wx:key="key"
+            data-key="{{item.key}}" bindtap="chooseCategory">
+        <view class="sheet-dot" style="background:{{item.color}}">{{item.short}}</view>
+        <view class="sheet-cat-name">{{item.name}}</view>
+        <view class="sheet-cat-hint">{{item.hint}}</view>
+      </view>
+    </view>
+    <input class="sheet-note" placeholder="补充说明（可选，最多 60 字）" maxlength="60"
+           value="{{note}}" bindinput="onNoteInput" />
+    <view class="pick-actions">
+      <button class="mini" bindtap="closeSheet">关闭</button>
+      <button class="mini mini-active" bindtap="confirm">提交上报</button>
+    </view>
+    <view class="sheet-tip">提交后为「待核实」，管理员核实后才会计入路线计算。</view>
+    <view class="sheet-tip">「关闭」只收起这个表单，地图和已选路段都还在；要离开用左上角「‹ 取消」。</view>
+  </view>
+</view>

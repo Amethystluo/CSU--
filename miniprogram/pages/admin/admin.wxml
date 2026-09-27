@@ -1,0 +1,72 @@
+<view class="page">
+  <view class="back" bindtap="back">‹ 返回路线页</view>
+  <view class="section-title">路况管理</view>
+
+  <view class="card">
+    <view class="row-head">
+      <view class="row-title">数据来源</view>
+      <view class="badge {{isCloud?'':'badge-warn'}}">{{backend}}</view>
+    </view>
+    <view class="tip" wx:if="{{!isCloud}}">
+      当前是本机存储：上报只在这台设备上生效，其他用户看不到。
+      要真正"同步给其他用户"，需按文档开通微信云开发并在 utils/reportStore.js 里填环境 ID。
+    </view>
+    <view class="tip" wx:else>已连接云端数据库，这里的审核结果会同步给所有用户。</view>
+  </view>
+
+  <view class="card" wx:if="{{counts}}">
+    <view class="row-head"><view class="row-title">生效路况</view><view class="badge">{{summary}}</view></view>
+    <view class="stats">
+      <view class="stat"><b>{{counts.pending}}</b><text>待核实</text></view>
+      <view class="stat"><b>{{counts.verified}}</b><text>已属实</text></view>
+      <view class="stat"><b>{{counts.rejected}}</b><text>已否决</text></view>
+      <view class="stat"><b>{{effective.total}}</b><text>正在影响规划</text></view>
+    </view>
+    <view class="eff" wx:if="{{effective.items.length}}">
+      <view class="eff-item" wx:for="{{effective.items}}" wx:key="ei">
+        <text class="eff-kind">{{item.kind}}</text>
+        <text class="eff-name">{{item.name}}</text>
+      </view>
+    </view>
+    <view class="tip" wx:if="{{effective.expired}}">另有 {{effective.expired}} 条上报已超过 6 小时有效期，自动失效。</view>
+    <view class="row-actions">
+      <button class="mini" bindtap="verifyAllPending">一键核实全部待审</button>
+      <button class="mini" bindtap="clearLocal">清空本机记录</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row-head"><view class="row-title">上报列表</view></view>
+    <picker class="mini-wrap" mode="selector" range="{{filters}}" range-key="name" value="{{filterIndex}}" bindchange="onFilter">
+      <view class="mini">筛选：{{filters[filterIndex].name}}</view>
+    </picker>
+
+    <view class="empty" wx:if="{{!list.length}}">没有符合条件的上报</view>
+
+    <view class="rep" wx:for="{{list}}" wx:key="id">
+      <view class="rep-top">
+        <view class="rep-cat" style="background:{{item.color}}">{{item.catName}}</view>
+        <view class="rep-status status-{{item.status}}">{{item.statusName}}</view>
+        <view class="rep-time">{{item.time}}</view>
+      </view>
+      <view class="rep-body">
+        <text class="rep-road">{{item.roadType}} · {{item.edgeId}}</text>
+        <text class="rep-sub">影响 {{item.edgeCount}} 条路段<text wx:if="{{!item.fresh}}"> · 已过期</text></text>
+        <text class="rep-note" wx:if="{{item.note}}">“{{item.note}}”</text>
+      </view>
+      <view class="rep-actions">
+        <view class="rep-btn ok" wx:if="{{item.status!=='verified'}}" data-id="{{item.id}}" data-status="verified" bindtap="setStatus">标为属实</view>
+        <view class="rep-btn no" wx:if="{{item.status!=='rejected'}}" data-id="{{item.id}}" data-status="rejected" bindtap="setStatus">标为不属实</view>
+        <view class="rep-btn del" data-id="{{item.id}}" bindtap="removeOne">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="tip">
+      审核规则：只有「属实」且在 6 小时有效期内的上报才会进入路线计算。
+      「待核实」会在地图上以空心标记显示，提醒用户但**不影响规划**；
+      「不属实」直接丢弃。这样能防止恶意或错误上报把大家带偏。
+    </view>
+  </view>
+</view>

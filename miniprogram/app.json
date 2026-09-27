@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/predict/predict",
+    "pages/route/route",
+    "pages/pick/pick",
+    "pages/admin/admin",
+    "pages/event/event",
+    "pages/farm/farm",
+    "pages/complain/complain",
+    "pages/panel/panel"
+  ],
+  "window": {
+    "navigationBarTitleText": "中南大学交通规划",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f7f4"
+  },
+  "style": "v2",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于规划从当前位置到校园目的地的少人路线"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "startLocationUpdate",
+    "onLocationChange"
+  ],
+  "sitemapLocation": "sitemap.json"
+}

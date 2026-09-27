@@ -1,0 +1,218 @@
+<view class="page">
+  <view class="back" bindtap="back">‹ 返回路线页</view>
+  <view class="section-title">事件与校历</view>
+
+  <view class="tabs">
+    <view class="tab {{tab==='events'?'tab-on':''}}" data-tab="events" bindtap="onTab">事件</view>
+    <view class="tab {{tab==='calendar'?'tab-on':''}}" data-tab="calendar" bindtap="onTab">校历（放假 / 调休）</view>
+  </view>
+
+  <!-- ============================== 事件 ============================== -->
+  <block wx:if="{{tab==='events'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">看哪一天</view>
+        <view class="badge">{{dateLabel}}</view>
+        <view class="badge badge-warn" wx:if="{{dayInfo && !dayInfo.hasClass}}">{{dayInfo.kindLabel}}</view>
+      </view>
+      <picker mode="date" value="{{dateISO}}" bindchange="onDateChange">
+        <view class="mini">选择日期：{{dateISO}}</view>
+      </picker>
+      <view class="row-hint" wx:if="{{dayInfo}}">
+        这天：{{dayInfo.kindLabel}}{{dayInfo.note ? ' · ' + dayInfo.note : ''}}
+        {{dayInfo.hasClass ? '（按周' + dayInfo.effectiveCN + '的课表算）' : '（没有课，只有活动会带来出行）'}}
+      </view>
+      <view class="row-actions">
+        <button class="mini" bindtap="startNew">新增事件</button>
+        <button class="mini" bindtap="loadSamples">载入示例</button>
+        <button class="mini" bindtap="clearAll">清空本机</button>
+      </view>
+      <view class="row-hint" wx:if="{{toast}}">{{toast}}</view>
+      <view class="tip">
+        共 {{totalEvents}} 条事件。<!--事件不写死在页面里：填名称、时间、场馆，
+        再选**谁参加**（年级 / 专业，可叠加）与**预计多少人**，方案就会按这批人的实际出行改变。-->
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{!editing}}">
+      <view class="row-head">
+        <view class="row-title">当天事件</view>
+        <view class="badge {{listCount?'':'badge-warn'}}">{{listCount}} 条</view>
+      </view>
+      <view class="tip" wx:if="{{!listCount}}">
+        这天还没有事件。可以「新增事件」<!--，或点「载入示例」看三种典型场景：
+        <text>全校参加（校运会）</text>、<text>按学院+年级（双选会）</text>、<text>只按年级（考试）</text>。-->
+      </view>
+      <view class="ev" wx:for="{{list}}" wx:key="id">
+        <view class="ev-head">
+          <text class="ev-title">{{item.title}}</text>
+          <text class="ev-type">{{item.typeName}}</text>
+        </view>
+        <view class="ev-meta">{{item.timeText}} · {{item.venueText}}</view>
+        <view class="ev-meta dim2">{{item.venueSnap}}</view>
+        <view class="ev-meta">参加：{{item.audienceText}} · <text class="strong">{{item.peopleText}}</text>（{{item.peopleSource}}）</view>
+        <view class="ev-meta dim2">{{item.dormText}} · {{item.windowText}}</view>
+        <view class="ev-note" wx:if="{{item.note}}">{{item.note}}</view>
+        <view class="row-actions">
+          <button class="mini" data-id="{{item.id}}" bindtap="editEvent">编辑</button>
+          <button class="mini mini-danger" data-id="{{item.id}}" bindtap="removeEvent">删除</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 编辑表单 -->
+    <view class="card" wx:if="{{editing}}">
+      <view class="row-head">
+        <view class="row-title">{{form.title ? '编辑事件' : '新增事件'}}</view>
+        <view class="badge">试算 {{audienceStudents}} 人</view>
+      </view>
+
+      <view class="fl">活动名称</view>
+      <input class="inp" value="{{form.title}}" placeholder="例如 2026 秋季校运会" bindinput="onTitleInput" />
+
+      <view class="fl">活动类型</view>
+      <picker mode="selector" range="{{typeNames}}" value="{{typeIndex}}" bindchange="onTypeChange">
+        <view class="mini">类型：{{typeNames[typeIndex]}}</view>
+      </picker>
+      <view class="row-hint">换类型会自动带上默认时长与"到场提前量"。</view>
+
+      <view class="fl">日期</view>
+      <picker mode="date" value="{{form.date}}" bindchange="onFormDateChange">
+        <view class="mini">日期：{{form.date}}</view>
+      </picker>
+
+      <view class="fl">时间</view>
+      <view class="row-actions">
+        <picker class="mini-wrap" mode="time" value="{{form.start}}" bindchange="onStartChange">
+          <view class="mini">开始 {{form.start}}</view>
+        </picker>
+        <picker class="mini-wrap" mode="time" value="{{form.end}}" bindchange="onEndChange">
+          <view class="mini">结束 {{form.end}}</view>
+        </picker>
+      </view>
+      <view class="row-hint">出行时刻：{{windowsText}}（入场 = 开始前 {{form.leadMin}} 分钟）</view>
+
+      <view class="fl">场馆（在哪）</view>
+      <picker mode="selector" range="{{venueNames}}" value="{{venueIndex}}" bindchange="onVenueChange">
+        <view class="mini">场馆：{{form.venue}}</view>
+      </picker>
+      <view class="row-hint">{{venueHint}}</view>
+      <view class="row-hint">从底图上的 124 个地标里选（体育场、礼堂、各学院楼…），已自动吸附到最近路口。</view>
+
+      <view class="fl">谁参加 · 年级（不勾 = 全部年级）</view>
+      <view class="chips">
+        <view class="chip {{item.checked?'chip-on':''}}" wx:for="{{grades}}" wx:key="code"
+              data-code="{{item.code}}" bindtap="toggleGrade">
+          {{item.label}} · {{item.students}}人
+        </view>
+      </view>
+
+      <view class="fl">谁参加 · 院系 / 专业（不勾 = 全部专业）</view>
+      <input class="inp" value="{{groupKeyword}}" placeholder="搜索学院或专业，例如 机械" bindinput="onGroupSearch" />
+      <view class="row-hint">
+        数据里没有院系字段，班级名只到"专业 / 大类"一级；下面按前两字把专业粗分成"学院"方便勾选，
+        展开可以只勾其中某个专业。已勾 {{form.departments.length}} 个专业。
+      </view>
+      <view class="chips">
+        <view class="chip chip-plain" data-name="__none__" bindtap="clearAudience">清空选择</view>
+      </view>
+      <scroll-view class="grp-box" scroll-y>
+        <block wx:for="{{groups}}" wx:key="key">
+          <block wx:if="{{!groupKeyword || item.label.indexOf(groupKeyword) >= 0}}">
+            <view class="grp">
+              <view class="grp-row">
+                <view class="chip {{item.checked?'chip-on':(item.partial?'chip-part':'')}}"
+                      data-key="{{item.key}}" bindtap="toggleGroup">
+                  {{item.label}} · {{item.students}}人
+                </view>
+                <view class="grp-exp" data-key="{{item.key}}" bindtap="toggleExpand">{{item.expanded?'收起':'展开'}}</view>
+              </view>
+              <view class="grp-sub" wx:if="{{item.expanded}}">
+                <view class="chip chip-sm {{p.checked?'chip-on':''}}" wx:for="{{item.prefixes}}" wx:for-item="p"
+                      wx:key="name" data-name="{{p.name}}" bindtap="togglePrefix">
+                  {{p.name}} {{p.students}}
+                </view>
+              </view>
+            </view>
+          </block>
+        </block>
+      </scroll-view>
+
+      <view class="fl">预计多少人（留空 = 按上面选出的实际人数）</view>
+      <input class="inp" type="number" value="{{form.headcount}}" placeholder="例如 3000" bindinput="onHeadcountInput" />
+      <view class="row-hint">{{headcountHint}}</view>
+
+      <view class="fl">备注</view>
+      <input class="inp" value="{{form.note}}" placeholder="例如 全校参加，集中入场" bindinput="onNoteInput" />
+
+      <view class="sum">
+        选中人群：{{audienceText}}<br/>
+        实际 {{audienceStudents}} 人 / {{audienceClasses}} 个班 / 涉及 {{audienceDorms}} 栋宿舍<br/>
+        出行时刻：{{windowsText}}
+      </view>
+
+      <view class="error" wx:for="{{formProblems}}" wx:key="*this">{{item}}</view>
+
+      <view class="row-actions">
+        <button class="mini mini-primary" bindtap="saveEvent">保存</button>
+        <button class="mini" bindtap="cancelEdit">取消</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============================== 校历 ============================== -->
+  <block wx:else>
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">放假 / 调休</view>
+        <view class="badge">{{overrideList.length}} 条</view>
+      </view>
+      <view class="tip">
+        模型默认「周一到周五按课表上课、周末没课」。<!--放假与调休用这张表来表达：
+        <text>放假</text>那天按没有课算；<text>调休</text>那天按指定星期几的课表算（例如周六补周四的课）。
+        这样选到那天时，时段与热度都会跟着换。-->
+      </view>
+      <view class="row-actions">
+        <button class="mini" bindtap="startOverride">新增校历条目</button>
+      </view>
+
+      <view class="ov" wx:for="{{overrideList}}" wx:key="date">
+        <view class="ev-meta"><text class="strong">{{item.label}}</text></view>
+        <view class="ev-meta dim2" wx:if="{{item.note}}">{{item.note}}</view>
+        <view class="row-actions">
+          <button class="mini mini-danger" data-date="{{item.date}}" bindtap="removeOverride">删除</button>
+        </view>
+      </view>
+      <view class="tip" wx:if="{{!overrideList.length}}">还没有录入放假日程。真实校历请按学校通知填。</view>
+    </view>
+
+    <view class="card" wx:if="{{ovForm}}">
+      <view class="row-head"><view class="row-title">新增校历条目</view></view>
+      <view class="fl">日期</view>
+      <picker mode="date" value="{{ovForm.date}}" bindchange="onOvDate">
+        <view class="mini">日期：{{ovForm.date}}</view>
+      </picker>
+      <view class="fl">类型</view>
+      <picker mode="selector" range="{{kindNames}}" bindchange="onOvKind">
+        <view class="mini">类型：{{ovForm.kind === 'holiday' ? '放假' : '调休上课'}}</view>
+      </picker>
+      <block wx:if="{{ovForm.kind === 'makeup'}}">
+        <view class="fl">按星期几上课</view>
+        <picker mode="selector" range="{{weekNames}}" bindchange="onOvWeek">
+          <view class="mini">按{{weekNames[ovForm.asWeekday - 1]}}的课表</view>
+        </picker>
+      </block>
+      <view class="fl">备注</view>
+      <input class="inp" value="{{ovForm.note}}" placeholder="例如 国庆调休" bindinput="onOvNote" />
+      <view class="error" wx:for="{{ovProblems}}" wx:key="*this">{{item}}</view>
+      <view class="row-actions">
+        <button class="mini mini-primary" bindtap="saveOverride">保存</button>
+        <button class="mini" bindtap="cancelOverride">取消</button>
+      </view>
+    </view>
+  </block>
+
+  <view class="row-actions" style="margin-top:24rpx">
+    <button class="mini" bindtap="goRoute">去路线页看效果</button>
+  </view>
+</view>

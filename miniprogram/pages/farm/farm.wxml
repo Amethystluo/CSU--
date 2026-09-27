@@ -1,0 +1,93 @@
+<view class="page">
+  <view class="back" bindtap="back">‹ 返回</view>
+
+  <!-- 农场主题头部 -->
+  <view class="farm-hero">
+    <view class="farm-hero-title">🌱 中南农场</view>
+    <view class="farm-hero-sub">种下美好 · 收获快乐</view>
+  </view>
+
+  <!-- 顶部资源条 -->
+  <view class="res-bar">
+    <view class="res-item"><text class="res-label">💰 学币</text><text class="res-value">{{coins}}</text></view>
+    <view class="res-item"><text class="res-label">⭐ 经验</text><text class="res-value">{{exp}}/{{expNext}}</text></view>
+    <view class="res-item"><text class="res-label">📦 收获</text><text class="res-value">{{totalHarvest}}</text></view>
+    <view class="res-item" bindtap="help"><text class="res-label">❓玩法</text></view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="exp-bar"><view class="exp-fill" style="width:{{expPercent}}%"></view></view>
+  <view class="level-text">Lv.{{level}} · {{levelName}}</view>
+
+  <!-- 顶部Tab -->
+  <view class="farm-tabs">
+    <text class="tab {{tab==='field'?'active':''}}" data-tab="field" bindtap="setTab">🌾 我的农田</text>
+    <text class="tab {{tab==='shop'?'active':''}}" data-tab="shop" bindtap="setTab">🛒 商店</text>
+  </view>
+
+  <!-- ============ 农田区 ============ -->
+  <block wx:if="{{tab==='field'}}">
+    <view class="field-tip">种下作物，等待成熟，收获学币！点一下空地/作物进行操作</view>
+
+    <view class="grid">
+      <view wx:for="{{plots}}" wx:key="index" class="plot" data-index="{{index}}" bindtap="tapPlot">
+        <block wx:if="{{!item.crop}}"><view class="cell-empty">🌱 空地</view></block>
+        <block wx:else>
+          <view class="cell-crop">
+            <view class="crop-emoji">{{cropEmoji(item.crop, item.state)}}</view>
+            <view class="crop-name">{{item.crop}}</view>
+            <view wx:if="{{item.state==='growing'}}" class="crop-progress">{{growPercent(item)}}%</view>
+            <view wx:elif="{{item.state==='ripe'}}" class="crop-ripe">成熟!</view>
+            <view wx:else class="crop-withered">枯了</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 操作面板 -->
+    <view wx:if="{{selected !== null}}" class="action-panel">
+      <view class="action-title">第{{selected+1}}块地 · {{plots[selected].crop || '空地'}}</view>
+      <view class="action-btns">
+        <view wx:if="{{!plots[selected].crop}}" class="action-btn" bindtap="plantSelected">🌱 种植</view>
+        <view wx:if="{{plots[selected].state==='ripe'}}" class="action-btn harvest-btn" bindtap="harvestSelected">🧺 收获</view>
+        <view wx:if="{{plots[selected].state==='withered'}}" class="action-btn clear-btn" bindtap="clearSelected">🧹 清理</view>
+        <view class="action-btn" bindtap="tapPlot" data-index="-1">✖ 取消</view>
+      </view>
+    </view>
+
+    <!-- 收获统计 -->
+    <view class="card" wx:if="{{totalHarvest > 0}}">
+      <view class="section-title">📦 我的收获</view>
+      <view class="inventory">
+        <view wx:for="{{inventoryList}}" wx:key="name" class="inv-item">
+          <text class="inv-emoji">{{item.emoji}}</text>
+          <text class="inv-name">{{item.name}} × {{item.count}}</text>
+          <text class="inv-sell">可卖 {{item.sell}}🪙/个</text>
+          <text class="inv-sell-btn" data-crop="{{item.name}}" bindtap="sellCrop">卖出</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ 商店区 ============ -->
+  <block wx:else>
+    <view class="shop-tip">用学币购买种子，等级越高可种更好的作物</view>
+    <view class="crop-list">
+      <view wx:for="{{crops}}" wx:key="name" class="crop-card">
+        <text class="crop-card-emoji">{{item.emoji}}</text>
+        <view class="crop-card-info">
+          <text class="crop-card-name">{{item.name}}</text>
+          <text class="crop-card-desc">时间{{item.duration}}min · 卖{{item.sellPrice}}🪙 · 经验{{item.exp}}</text>
+          <text wx:if="{{item.needLevel > level}}" class="crop-card-level">需 Lv.{{item.needLevel}}</text>
+        </view>
+        <button class="buy-btn" data-crop="{{item.name}}" style="{{item.needLevel>level||coins<item.cost ? 'background:#a3bfaf;color:#d9e6dd;' : ''}}" bindtap="buy">{{item.cost}}🪙</button>
+      </view>
+    </view>
+
+    <view class="shop-donate">
+      <view class="section-title">🎲 摸奖</view>
+      <view class="tip">花 3 学币碰碰运气，赢了送高级种子！</view>
+      <button class="secondary" bindtap="lottery">🎰 摸一次奖 (3🪙)</button>
+    </view>
+  </block>
+</view>

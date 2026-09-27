@@ -1,0 +1,12 @@
+source rows read   = 14350
+class blocks       = 1435
+classes parsed     = 1435
+classes with size  = 1435
+non-empty cells    = 19882
+periods > 10       = 123
+    口腔医学（5+3）2402 11－12
+    口腔医学（5+3）2401 11－12
+    口腔五年2402 11－12
+    口腔五年2401 11－12
+    口腔（5+3）23级3组 11－12
+csv                = tools\_in\timetable-cells.csv

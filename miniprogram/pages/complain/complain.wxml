@@ -1,0 +1,46 @@
+<view class="page">
+  <view class="back" bindtap="back">‹ 返回首页</view>
+
+  <!-- 吐槽主题头部 -->
+  <view class="cpl-hero">
+    <view class="cpl-hero-title">💬 校园吐槽</view>
+    <view class="cpl-hero-sub">通勤路上的槽点、建议、趣事，匿名分享给CSU校友</view>
+  </view>
+
+  <!-- 发布框 -->
+  <view class="card">
+    <textarea class="input-box" placeholder="今天路上有什么想吐槽的？" value="{{inputText}}" bindinput="onInput" maxlength="200" auto-focus="false"/>
+    <view class="input-footer">
+      <text class="char-count">{{inputText.length}}/200</text>
+      <button class="submit-btn" bindtap="submit" disabled="{{submitting || !inputText.trim()}}">
+        {{submitting ? '发送中…' : '发送吐槽'}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 排序切换 -->
+  <view class="sort-bar">
+    <text class="{{sortMode==='newest'?'sort-active':''}}" bindtap="switchSort">⏱ 最新</text>
+    <text class="sort-divider">|</text>
+    <text class="{{sortMode==='hottest'?'sort-active':''}}" bindtap="switchSort">🔥 最热</text>
+  </view>
+
+  <!-- 吐槽列表 -->
+  <view wx:if="{{complaints.length === 0}}" class="empty-tip">
+    <text>还没有吐槽，快来发第一条吧 🎤</text>
+  </view>
+
+  <view wx:for="{{complaints}}" wx:for-item="item" wx:key="id" class="card complaint-card">
+    <view class="complaint-content">{{item.content}}</view>
+    <view class="complaint-meta">
+      <text class="complaint-time">{{item.time}}</text>
+      <view class="complaint-actions">
+        <view class="action-btn like-btn {{item.liked?'liked':''}}" data-id="{{item.id}}" bindtap="toggleLike">
+          {{item.liked ? '❤️' : '🤍'}} {{item.likes}}
+        </view>
+        <view class="action-btn" data-content="{{item.content}}" bindtap="copyContent">📋 复制</view>
+        <view class="action-btn delete-btn" data-id="{{item.id}}" bindtap="deleteComplaint">🗑 删除</view>
+      </view>
+    </view>
+  </view>
+</view>

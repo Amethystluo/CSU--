@@ -1,0 +1,20 @@
+新增总结文档，并校正各文档里过期的数字
+
+新增
+- 总结.md：从拿到项目为止做了什么改动 + 用了什么技术栈，交接/答辩用。
+  含起点状态、五轮改动（对应 5 个提交）、技术栈分组表、现在的规模、
+  功能对照、修掉的真 bug、明确没做/打折的地方、命令清单、文档索引。
+
+校正（都用实测值替换，之前几轮留下的陈旧数字）
+- 原有代码"未改动"的说法不准确：实际有 7 个文件改过。用原始 miniprogram.zip
+  逐文件 SHA-256 比对确认是 18 个逐字节一致，并列出改动的 7 个及各自原因。
+  （predict.wxml 只改了标题口径说明，sitemap.json 只加了 2 条 disallow。）
+- utils/ 模块数 7 -> 10，并补上 timeModel/viewport/coord 三个漏掉的行数与说明。
+- route-graph.js 41.9/42 -> 44.8 KB，补 data/time-profile.js 12.4 KB。
+- 项目树补 import-timetable.ps1 / build-time-profile.js / check-time-shape.js /
+  make-time-preview.js / test-time.js，并修掉 test-route-page 的 161 -> 176 项。
+- tools 计数 12/20 -> 23 个 .js + 2 个 .ps1；预览图 3 -> 4 张。
+- utils 文件清单的行数改为实测值（router 511 / scenario 276 / render 293 等）。
+- 包体 698 KB -> 777 KB。
+
+校验：559 项断言全过，接线检查全过，文档里已无过期数字。

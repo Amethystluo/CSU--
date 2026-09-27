@@ -1,0 +1,150 @@
+<!--
+  少人路线（一屏不滚动）：
+    顶部一行状态 → 地图主区 → 结果摘要一行 → 主操作（起点/终点/走法/规划）→ 模块按钮网格
+  每个模块都改成按钮，点进对应的二级页（pages/panel/panel?key=xxx）。
+  页面整体 flex 布局 + overflow:hidden，任何机型都在一屏内，不再上下滑动找模块。
+-->
+<view class="page rt-page">
+
+  <!-- 顶部：返回 + 标题 -->
+  <view class="rt-top">
+    <view class="rt-back" bindtap="back" hover-class="tap-hover">‹ 首页</view>
+    <view class="rt-title">少人路线</view>
+  </view>
+
+  <!-- 状态条：一眼看清当前条件，任何一项都能点进去改 -->
+  <view class="rt-status">
+    <view class="rt-chip" data-key="time" bindtap="goPanel" hover-class="tap-hover">{{caliber}}</view>
+    <view class="rt-chip" data-key="weather" bindtap="goPanel" hover-class="tap-hover">{{weatherChip}}</view>
+    <view class="rt-chip {{closedList.length?'rt-chip-on':''}}" data-key="close" bindtap="goPanel" hover-class="tap-hover">封路 {{closedList.length}}</view>
+    <view class="rt-chip {{eventCount?'rt-chip-on':''}}" data-key="event" bindtap="goPanel" hover-class="tap-hover">活动 {{eventIncluded}}/{{eventCount}}</view>
+  </view>
+
+  <!-- 地图（主区：热度层、封路、上报标记、路线与方向箭头、拥堵节点；可拖动缩放） -->
+  <view class="route-map rt-map" id="routeMap"
+        bindtouchstart="onMapTouchStart"
+        catchtouchmove="onMapTouchMove"
+        bindtouchend="onMapTouchEnd"
+        bindtap="onCongestionTap">
+    <view class="route-zoom" style="transform:translate({{tx}}px,{{ty}}px) scale({{scale}})">
+      <image class="map-img" src="/assets/campus-map.svg" mode="aspectFit" />
+      <canvas canvas-id="routeCanvas" id="routeCanvas" class="route-canvas"></canvas>
+    </view>
+    <view class="zoom-tools">
+      <button bindtap="zoomOut" hover-class="tap-hover">−</button>
+      <text>{{scaleLabel}}</text>
+      <button bindtap="zoomIn" hover-class="tap-hover">＋</button>
+      <button bindtap="resetZoom" hover-class="tap-hover">全览</button>
+    </view>
+    <!-- 全览（1.0×）时地图正好铺满，四周没有可拖的余量，所以拖不动 ——
+         这不是坏了，但用户看不出来，这里明说一句。 -->
+    <view class="pan-hint" wx:if="{{!canPan}}">全览中 · 点 ＋ 或双指放大后即可拖动</view>
+    <!-- 图例的位置/大小都写在 pages/route/route.wxss 的 .legend 里。
+         别在这里加内联的 top（类里已有 bottom）：
+         绝对定位同时有 top 和 bottom 时高度会被撑开、bottom 把下边界钉住，
+         结果就是"改 top 怎么都不动"；而且地图是 flex:1 动态高度，写死的像素值会跑到地图外面。 -->
+    <view class="legend">
+      <view class="legend-title">占用率 · {{caliber}}</view>
+      <view class="legend-bar"></view>
+      <view class="legend-scale"><text>低</text><text>基线最挤</text><text>超载</text></view>
+      <view class="legend-item" wx:if="{{closedList.length}}"><view class="legend-dash"></view><text>已封闭</text></view>
+      <view class="legend-item" wx:if="{{nodes.length}}"><view class="legend-node"></view><text>堵点（可点）</text></view>
+      <!-- 规划出来的绿线本身不带流量信息，是它**经过的每一段**按占用率叠色，
+           所以这里单独给一条"路线"的图例，别和上面的热度层色标混起来。 -->
+      <view class="legend-item legend-route-key" wx:if="{{planned}}">
+        <text class="legend-key-label">路线</text>
+        <view class="legend-swatch sw-ok"></view><text>畅通</text>
+        <view class="legend-swatch sw-warn"></view><text>较堵</text>
+        <view class="legend-swatch sw-bad"></view><text>爆堵</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 结果摘要：一行，点开看详情与三走法对比 -->
+  <view class="rt-result" wx:if="{{result}}" data-key="result" bindtap="goPanel" hover-class="tap-hover">
+    <view class="rt-result-main">{{result.modeName}} · {{result.timeText}} · {{result.distanceMeters}} m</view>
+    <view class="rt-result-sub">平均占用 {{result.avgCongestion}} · 详情 ›</view>
+  </view>
+  <view class="rt-result rt-result-empty" wx:else bindtap="plan" hover-class="tap-hover">
+    <view class="rt-result-main">{{planError || hint}}</view>
+  </view>
+
+  <!-- 主操作：起点 / 终点 -->
+  <view class="rt-picks">
+    <view class="rt-pick" bindtap="pickStartSheet" hover-class="tap-hover">
+      <view class="rt-dot dot-start"></view>
+      <view class="rt-pick-text">{{startLabel}}</view>
+      <view class="rt-pick-go">›</view>
+    </view>
+    <view class="rt-pick" bindtap="pickDestSheet" hover-class="tap-hover">
+      <view class="rt-dot dot-dest"></view>
+      <view class="rt-pick-text">{{destLabel}}</view>
+      <view class="rt-pick-go">›</view>
+    </view>
+  </view>
+
+  <!-- 主操作：走法 + 规划 -->
+  <view class="rt-actions">
+    <view class="rt-mode {{mode===item.key?'rt-mode-on':''}}" wx:for="{{modes}}" wx:key="key"
+          data-mode="{{item.key}}" bindtap="onSwitchMode" hover-class="tap-hover">{{item.name}}</view>
+    <button class="rt-plan" bindtap="plan" hover-class="tap-hover">规划路线</button>
+  </view>
+
+  <!-- 模块按钮网格：每个模块一个按钮，点进各自的二级页。
+       按钮内部是两行：第一行 图标 + 名称，第二行 角标（角标走正常文档流，不用绝对定位，
+       这样长文案自己换行/截断，不会压住名称，也不需要手调 style）。 -->
+  <view class="rt-grid">
+    <view class="rt-cell" wx:for="{{panelButtons}}" wx:key="key" data-key="{{item.key}}"
+          bindtap="goPanel" hover-class="tap-hover">
+      <view class="rt-cell-top">
+        <text class="rt-cell-icon">{{item.icon}}</text>
+        <text class="rt-cell-name">{{item.name}}</text>
+      </view>
+      <text class="rt-cell-badge" wx:if="{{item.badge}}">{{item.badge}}</text>
+    </view>
+  </view>
+
+  <!-- ============ 以下为覆盖层，不属于模块 ============ -->
+
+  <!-- 目的地搜索面板（起点/终点的「搜索选择」用） -->
+  <view class="sheet-mask" wx:if="{{placeSearch}}" bindtap="closePlaceSearch"></view>
+  <view class="sheet sheet-tall" wx:if="{{placeSearch}}">
+    <view class="sheet-head">
+      <view class="sheet-title">选择{{placeSearch.target==='start'?'起点':'终点'}}</view>
+      <view class="sheet-loc">共 {{placeResults.length}} 个结果</view>
+    </view>
+    <input class="sheet-note" placeholder="搜索宿舍或教学点，例如「升华 37」" confirm-type="search"
+           value="{{placeSearch.keyword}}" bindinput="onPlaceKeyword" focus="{{true}}" />
+    <view class="kindbar">
+      <view class="kind {{placeSearch.kind===item.key?'kind-on':''}}"
+            wx:for="{{placeKinds}}" wx:key="key" data-kind="{{item.key}}" bindtap="onPlaceKind">{{item.name}}</view>
+    </view>
+    <scroll-view class="place-list" scroll-y>
+      <view class="place-row" wx:for="{{placeResults}}" wx:key="idx"
+            data-index="{{index}}" bindtap="onPickPlaceResult" hover-class="tap-hover">
+        <view class="place-main">
+          <view class="place-name">{{item.n}}</view>
+          <view class="place-meta">{{item.c}} · {{item.k}} · 距路口 {{item.s}}m</view>
+        </view>
+        <view class="place-go">选择</view>
+      </view>
+      <view class="empty" wx:if="{{!placeResults.length}}">没有匹配的地点，换个关键词试试</view>
+    </scroll-view>
+    <view class="pick-actions"><button class="mini" bindtap="closePlaceSearch" hover-class="tap-hover">取消</button></view>
+  </view>
+
+  <!-- 拥堵节点趣味提示（点地图上的堵点） -->
+  <view class="sheet-mask" wx:if="{{nodeSheet}}" bindtap="closeCongestionSheet"></view>
+  <view class="joke" wx:if="{{nodeSheet}}">
+    <view class="joke-tag">拥堵彩蛋</view>
+    <view class="joke-title">{{nodeSheet.title}}</view>
+    <view class="joke-road">{{nodeSheet.road}}</view>
+    <view class="joke-desc">{{nodeSheet.desc}}</view>
+    <view class="joke-options">
+      <view class="joke-btn" wx:for="{{nodeSheet.options}}" wx:key="id"
+            data-label="{{item.label}}" bindtap="onJokeOption" hover-class="tap-hover">{{item.label}}</view>
+    </view>
+    <view class="joke-note">{{nodeSheet.note}}</view>
+    <view class="joke-close" bindtap="closeCongestionSheet" hover-class="tap-hover">关闭</view>
+  </view>
+</view>

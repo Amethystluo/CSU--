@@ -1,0 +1,360 @@
+<!--
+  模块二级页：一个通用页 + key 区分，9 个模块各进各的。
+  这里只做两件事：显示路线页算好的数据（panelBus 的 snapshot）、把用户的改动写回 session。
+  任何真正的计算与重算都在路线页发生。
+-->
+<view class="page pn-page">
+  <view class="pn-top">
+    <view class="pn-back" bindtap="close" hover-class="tap-hover">‹ 返回</view>
+    <view class="pn-title">{{title}}</view>
+    <view class="pn-spacer"></view>
+  </view>
+
+  <!-- 直接从其它入口打开本页（没经过路线页）时，明说数据从哪来，而不是显示一片空白 -->
+  <view class="card" wx:if="{{noSnapshot}}">
+    <view class="row-title">没有拿到路线页的数据</view>
+    <view class="row-hint">
+      这个页面是「少人路线」的模块二级页，显示的内容由路线页推送。
+      请回到路线页，点对应的模块按钮进来。
+    </view>
+    <view class="row-actions">
+      <button class="mini" bindtap="close" hover-class="tap-hover">返回</button>
+    </view>
+  </view>
+
+  <!-- ==================== 预测时段 ==================== -->
+  <block wx:if="{{key==='time'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">当前口径</view>
+        <view class="badge {{timeIdle?'badge-warn':''}}">{{caliber}}</view>
+      </view>
+      <view class="row-hint" wx:if="{{timeText}}">{{timeText}}</view>
+      <view class="row-actions">
+        <view class="mini {{timeChoice==='auto'?'mini-active':''}}" data-key="auto" bindtap="onPickSlot"
+              hover-class="tap-hover">按当前时间</view>
+        <view class="mini {{timeChoice==='peak'?'mini-active':''}}" data-key="peak" bindtap="onPickSlot"
+              hover-class="tap-hover">当天最忙</view>
+        <view class="mini {{timeChoice==='worst'?'mini-active':''}}" data-key="worst" bindtap="onPickSlot"
+              hover-class="tap-hover">整周最高峰</view>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{timeAvailable}}">
+      <view class="row-head">
+        <view class="row-title">日期</view>
+        <view class="badge {{isWeekend?'badge-warn':''}}">{{dateLabel}}</view>
+        <view class="badge badge-warn" wx:if="{{dayKind==='holiday'}}">放假</view>
+        <view class="badge" wx:elif="{{dayKind==='makeup'}}">调休</view>
+      </view>
+      <picker mode="date" value="{{dateISO}}" start="{{dateMin}}" end="{{dateMax}}" bindchange="onDateChange">
+        <view class="mini">选择日期：{{dateISO}}</view>
+      </picker>
+      <view class="row-hint">{{dateHint}}</view>
+    </view>
+
+    <!-- 作息时间表：第1-2节 / 第3-4节 …，每节列出「课前」「课后」两个时刻 -->
+    <view class="card" wx:if="{{timeAvailable}}">
+      <view class="row-head">
+        <view class="row-title">作息时间表</view>
+        <view class="badge">{{previewName}} · {{tablePicks}} 个换课时刻</view>
+      </view>
+
+      <view class="tip" wx:if="{{offDay}}">{{offDayNote}}</view>
+
+      <!-- 看周几的课表：周末/放假时也能查工作日的课表 -->
+      <view class="wktabs">
+        <view class="wktab {{item.active?'wktab-on':''}} {{item.hasClass?'':'wktab-off'}}"
+              wx:for="{{weekdayTabs}}" wx:key="w"
+              data-w="{{item.w}}" bindtap="onWeekday" hover-class="tap-hover">{{item.name}}</view>
+      </view>
+
+      <view class="pt" wx:for="{{periodTable}}" wx:key="key">
+        <view class="pt-head">
+          <text class="pt-name">{{item.name}}</text>
+          <text class="pt-time">{{item.start}}-{{item.end}}</text>
+          <text class="pt-none" wx:if="{{!item.hasClass}}">这天没课</text>
+        </view>
+        <view class="pt-slots">
+          <view class="slot {{item.before.selected?'slot-on':''}}"
+                wx:if="{{item.before}}" data-key="{{item.before.key}}" data-minutes="{{item.before.minutes}}"
+                bindtap="onPickSlot" hover-class="tap-hover">
+            <text class="slot-phase">课前</text>
+            <text class="slot-time">{{item.before.time}}</text>
+            <text class="slot-num">{{item.before.totalText}} 人次</text>
+          </view>
+          <view class="slot slot-empty" wx:else>课前 · 无通勤</view>
+
+          <view class="slot {{item.after.selected?'slot-on':''}}"
+                wx:if="{{item.after}}" data-key="{{item.after.key}}" data-minutes="{{item.after.minutes}}"
+                bindtap="onPickSlot" hover-class="tap-hover">
+            <text class="slot-phase">课后</text>
+            <text class="slot-time">{{item.after.time}}</text>
+            <text class="slot-num">{{item.after.totalText}} 人次</text>
+          </view>
+          <view class="slot slot-empty" wx:else>课后 · 无通勤</view>
+        </view>
+      </view>
+
+      <view class="row-hint">{{tableHint}}</view>
+      <view class="tip" wx:if="{{timeIdle}}">
+        这一刻按课表模型没有通勤，地图上不会有热度。可切到「当天最忙」看最坏的情况。
+      </view>
+    </view>
+
+    <view class="card" wx:else>
+      <view class="row-value">当前口径：最高峰时段</view>
+      <view class="row-hint">{{timeHint}}</view>
+      <view class="tip">
+        整张热度图是「最忙那一会儿」的情况，不是此刻路况；夜间、周末也照样满格。
+        要按时段预测需要一份含节次时间的课表（见《时段数据说明.md》）。
+      </view>
+    </view>
+  </block>
+
+  <!-- ==================== 当天事件 ==================== -->
+  <block wx:if="{{key==='event'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">当天事件</view>
+        <view class="badge {{eventCount?'':'badge-warn'}}">{{eventIncluded}}/{{eventCount}} 计入</view>
+      </view>
+      <view class="row-hint" wx:if="{{eventText}}">{{eventText}}</view>
+      <view class="tip" wx:if="{{!eventCount}}">
+        这天还没有活动。活动（校运会、双选会、考试…）在「事件与校历」里录：
+        填名称、时间、场馆，再选**谁参加**（年级 / 专业）与预计人数，方案就会按这批人改路。
+      </view>
+      <view class="ev-row" wx:for="{{eventList}}" wx:key="id">
+        <view class="ev-main">
+          <view class="ev-title">{{item.title}}<text class="ev-type">{{item.typeName}}</text></view>
+          <view class="ev-meta">{{item.timeText}} · {{item.venueText}}</view>
+          <view class="ev-meta">参加：{{item.audienceText}} · {{item.peopleText}}</view>
+        </view>
+        <view class="mini {{item.include?'mini-active':''}}" data-id="{{item.id}}" bindtap="toggleEventInclude"
+              hover-class="tap-hover">{{item.include?'已计入':'已排除'}}</view>
+      </view>
+      <view class="row-actions">
+        <button class="mini" bindtap="goEventPage" hover-class="tap-hover">事件与校历</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- ==================== 天气 ==================== -->
+  <block wx:if="{{key==='weather'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">当前天气</view>
+        <view class="badge" wx:if="{{weatherChoice==='auto'&&!weatherError}}">实时联网</view>
+        <view class="badge badge-warn" wx:elif="{{weatherChoice==='auto'&&weatherError}}">联网失败</view>
+        <view class="badge" wx:else>手动指定</view>
+      </view>
+      <view class="row-value">
+        <block wx:if="{{weatherLoading}}">正在获取天气…</block>
+        <block wx:elif="{{weatherText}}">{{weatherText}}<text class="dim" wx:if="{{weatherDetail}}"> · {{weatherDetail}}</text></block>
+        <block wx:else>未获取到天气（按无雨计算）</block>
+      </view>
+      <view class="row-hint" wx:if="{{weatherFetchedAt}}">数据时间 {{weatherFetchedAt}} · 来源 {{weatherSource}}</view>
+      <view class="row-actions">
+        <picker class="mini-wrap" mode="selector" range="{{weatherChoices}}" range-key="name" value="{{weatherIndex}}" bindchange="onWeatherChoice">
+          <view class="mini">切换天气</view>
+        </picker>
+        <button class="mini" bindtap="refreshWeather" wx:if="{{weatherChoice==='auto'}}" hover-class="tap-hover">重新获取</button>
+      </view>
+      <view class="error" wx:if="{{weatherError}}">{{weatherError}}</view>
+    </view>
+    <view class="card">
+      <view class="row-head"><view class="row-title">雨天的算法效果</view></view>
+      <view class="tip">{{weatherAssumption}}</view>
+      <view class="row-hint">雨天不是简单把时间乘个系数：车速下降会让同样的流量占更多路面，
+        所以「占用率 = 流量 ÷ 车速」会自己变大，拥堵指数随之上升。</view>
+    </view>
+  </block>
+
+  <!-- ==================== 实时路况上报 ==================== -->
+  <block wx:if="{{key==='report'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">路况数据</view>
+        <view class="badge {{reportCloud?'':'badge-warn'}}">{{reportBackend}}</view>
+      </view>
+      <view class="row-value" wx:if="{{reportSummary}}">{{reportSummary}}</view>
+      <view class="row-hint" wx:if="{{reportCounts}}">
+        待核实 {{reportCounts.pending}} 条 · 已属实 {{reportCounts.verified}} 条 · 已否决 {{reportCounts.rejected}} 条
+      </view>
+      <view class="stats" wx:if="{{effective}}">
+        <view class="stat"><b>{{effective.total}}</b><text>正在影响规划</text></view>
+        <view class="stat"><b>{{effective.closed}}</b><text>封路</text></view>
+        <view class="stat"><b>{{effective.congestion}}</b><text>异常拥堵</text></view>
+        <view class="stat"><b>{{effective.police}}</b><text>有交警</text></view>
+      </view>
+      <view class="tip">上报默认是「待核实」，**核实后才计入路线计算** —— 未经核实的信息不会影响任何结果。</view>
+      <view class="row-actions">
+        <button class="mini" bindtap="beginPickReport" hover-class="tap-hover">在线上报路况</button>
+        <button class="mini" bindtap="goAdmin" hover-class="tap-hover">路况管理（审核）</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- ==================== 交警规避 ==================== -->
+  <block wx:if="{{key==='police'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">交警规避</view>
+        <view class="badge" wx:if="{{avoidPolice}}">已开启</view>
+      </view>
+      <view class="row-hint">
+        开启后，被标记有交警的路段按「被拦下平均耽误 {{policeDelayMinutes}} 分钟」折算成代价，能绕就绕。
+      </view>
+      <view class="row-hint" wx:if="{{policeCount>0}}">当前有 {{policeCount}} 段道路标记了交警。</view>
+      <view class="row-hint" wx:else>当前没有已核实的交警标记；可以到「实时路况上报」里上报。</view>
+      <view class="row-actions">
+        <button class="mini {{avoidPolice?'mini-active':''}}" bindtap="toggleAvoidPolice" hover-class="tap-hover">
+          {{avoidPolice?'已开启，点击关闭':'开启绕开交警'}}
+        </button>
+      </view>
+      <view class="tip">用**固定延误**而不是"代价乘一个倍数"：乘倍数会随路段长度变化，
+        短路段上小到忽略、长路段上又大到离谱；固定延误才符合"被拦下就是耽误几分钟"。</view>
+    </view>
+  </block>
+
+  <!-- ==================== 实时定位 ==================== -->
+  <block wx:if="{{key==='locate'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">实时定位</view>
+        <view class="badge" wx:if="{{tracking}}">跟随中</view>
+      </view>
+      <view class="row-hint">
+        开启后地图上会出现蓝色「我的位置」随你移动；起点若是定位得到的，位移超过 40 米会自动重新规划。
+        手动选过起点时不会覆盖你的选择。
+      </view>
+      <view class="row-value" wx:if="{{trackingText}}" style="margin-top:12rpx">{{trackingText}}</view>
+      <view class="row-hint" wx:else>还没有位置。开启后这里会显示你所在的楼栋。</view>
+      <view class="row-actions">
+        <button class="mini {{tracking?'mini-active':''}}" bindtap="toggleTracking" hover-class="tap-hover">
+          {{tracking?'关闭实时定位':'开启实时定位'}}
+        </button>
+      </view>
+      <view class="error" wx:if="{{trackingError}}">{{trackingError}}</view>
+    </view>
+  </block>
+
+  <!-- ==================== 直接封路 ==================== -->
+  <block wx:if="{{key==='close'}}">
+    <view class="card">
+      <view class="row-head">
+        <view class="row-title">已封路段</view>
+        <view class="badge {{closedList.length?'':'badge-warn'}}">{{closedList.length}} 条</view>
+      </view>
+      <view class="row-hint" wx:if="{{!closedList.length}}">
+        还没有封路。点「地图上点选封路」会打开全屏地图，选好道路确认即可 —— 这是绕过审核、直接改道路信息的方式。
+      </view>
+      <view class="closed-item" wx:for="{{closedList}}" wx:key="ei">
+        <view class="closed-main">
+          <view class="closed-name">{{item.roadType}}</view>
+          <view class="closed-meta">{{item.label}}</view>
+        </view>
+        <view class="closed-del" data-ei="{{item.ei}}" bindtap="removeClosed" hover-class="tap-hover">解除</view>
+      </view>
+      <view class="row-actions">
+        <button class="mini" bindtap="beginPickClose" hover-class="tap-hover">地图上点选封路</button>
+        <button class="mini" bindtap="clearClosed" wx:if="{{closedList.length}}" hover-class="tap-hover">全部解除</button>
+      </view>
+      <view class="tip">封路后流量会自动重分配到替代路径（增量分配法），被切断的路网会如实提示有多少人无法绕行。</view>
+    </view>
+  </block>
+
+  <!-- ==================== 拥堵预测 ==================== -->
+  <block wx:if="{{key==='congestion'}}">
+    <view class="card" wx:if="{{congestion}}">
+      <view class="row-head">
+        <view class="row-title">情景推演 · {{caliber}}</view>
+        <view class="badge" wx:if="{{atBaseline}}">基线</view>
+        <view class="badge badge-warn" wx:else>{{scenarioSummary}}</view>
+      </view>
+      <view class="stats">
+        <view class="stat"><b>{{congestion.index}}</b><text>拥堵指数（基线=1）</text></view>
+        <view class="stat"><b>{{congestion.aggravated}}</b><text>明显变堵路段</text></view>
+        <view class="stat"><b>{{congestion.eased}}</b><text>反而变松路段</text></view>
+        <view class="stat"><b>{{congestion.newHotspots}}</b><text>新增堵点</text></view>
+      </view>
+      <view class="stats" style="margin-top:12rpx">
+        <view class="stat"><b>{{congestion.avgOccNow}}</b><text>平均占用率（基线 {{congestion.avgOccBase}}）</text></view>
+        <view class="stat"><b>{{congestion.increased}}</b><text>流量上升路段</text></view>
+        <view class="stat"><b>{{congestion.unassignedFlow}}</b><text>无法绕行人次</text></view>
+        <view class="stat"><b>{{congestion.eased}}</b><text>变松路段</text></view>
+      </view>
+      <view class="cmp" wx:if="{{congestion.worst.length}}">
+        <view class="cmp-title">受影响最重的路段</view>
+        <view class="cmp-row" wx:for="{{congestion.worst}}" wx:key="text">
+          <view class="cmp-name">{{item.roadType}}</view>
+          <view class="cmp-nums">
+            <text class="cmp-time">占用 {{item.occBase}} → {{item.occNow}}</text>
+            <text>{{item.now}} 人/时段</text>
+          </view>
+        </view>
+      </view>
+      <view class="tip" wx:if="{{scenarioNote}}" style="margin-top:16rpx">{{scenarioNote}}</view>
+      <view class="tip">拥堵指数 = 当前情景的占用率 ÷ 同一时刻没有情景的占用率，>1 才是真的更堵。
+        包络口径（整周最高峰）是各路段各自最忙的时刻拼起来的，比任何真实时刻都更堵，只看最坏情况时用。</view>
+    </view>
+    <view class="card" wx:else>
+      <view class="row-value">还没有情景数据</view>
+      <view class="row-hint">回到路线页刷新一次即可生成。</view>
+    </view>
+  </block>
+
+  <!-- ==================== 规划结果 ==================== -->
+  <block wx:if="{{key==='result'}}">
+    <view class="card" wx:if="{{result}}">
+      <view class="row-head">
+        <view class="row-title">{{result.modeName}} · 规划结果</view>
+        <view class="badge">{{caliber}}</view>
+      </view>
+      <view class="stats">
+        <view class="stat"><b>{{result.timeText}}</b><text>预计骑行时间</text></view>
+        <view class="stat"><b>{{result.distanceMeters}} m</b><text>预计距离</text></view>
+        <view class="stat"><b>{{result.avgHeatPersons}}</b><text>平均同行人数（人/时段）</text></view>
+        <view class="stat"><b>{{result.avgCongestion}}</b><text>平均占用率</text></view>
+      </view>
+      <!-- 与地图上的颜色对上：绿线上的橙段/红段到底有几段 -->
+      <view class="tip tip-heat" wx:if="{{result.congestedSegments > 0}}" style="margin-top:16rpx">
+        地图上这条路线有 <text class="t-warn">{{result.congestedSegments - (result.badSegments || 0)}} 段较堵</text><block
+          wx:if="{{result.badSegments > 0}}">、<text class="t-bad">{{result.badSegments}} 段爆堵</text></block>（占用率
+        0.5 / 1.0 以上），就是绿线上变成橙色和红色的那几段。
+      </view>
+      <view class="tip" wx:if="{{result.crowdDelayMinutes >= 0.5}}" style="margin-top:16rpx">
+        其中约 {{result.crowdDelayMinutes}} 分钟是被拥堵拖慢的。
+      </view>
+      <view class="tip" wx:if="{{result.policeSegments > 0}}" style="margin-top:8rpx">
+        本路线仍会经过 {{result.policeSegments}} 段有交警的道路。
+      </view>
+      <view class="tip" wx:if="{{policeInsight}}" style="margin-top:8rpx">{{policeInsight}}</view>
+      <view class="tip" wx:if="{{result.roadMix}}" style="margin-top:8rpx">经过路段：{{result.roadMix}}</view>
+
+      <view class="cmp" wx:if="{{comparison.length}}">
+        <view class="cmp-title">三种走法对比（点一行切换）</view>
+        <view class="cmp-row {{item.active?'cmp-active':''}}" wx:for="{{comparison}}" wx:key="key"
+              data-mode="{{item.key}}" bindtap="onSwitchMode" hover-class="tap-hover">
+          <view class="cmp-name">{{item.name}}<text class="cmp-now" wx:if="{{item.active}}">当前</text></view>
+          <view class="cmp-nums">
+            <text class="cmp-time">{{item.timeText}}</text>
+            <text>{{item.distance}} m</text>
+            <text>平均 {{item.avgHeat}} 人</text>
+          </view>
+        </view>
+        <view class="cmp-insight" wx:if="{{insight}}">{{insight}}</view>
+      </view>
+      <view class="tip" style="margin-top:16rpx">
+        时间按电动自行车速度估算（15~24 km/h，含人流与天气减速）；绿线为路线，绿点起点、红点终点。
+      </view>
+    </view>
+    <view class="card" wx:else>
+      <view class="row-value">还没有规划结果</view>
+      <view class="row-hint">{{hint}} —— 回到路线页点「规划路线」。</view>
+      <view class="row-actions">
+        <button class="mini" bindtap="close" hover-class="tap-hover">回去规划</button>
+      </view>
+    </view>
+  </block>
+</view>

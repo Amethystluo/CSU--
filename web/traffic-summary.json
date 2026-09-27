@@ -1,0 +1,853 @@
+{
+  "summary": {
+    "source_classes": 1435,
+    "source_students": 37693,
+    "source_events": 27308,
+    "included_events": 15459,
+    "excluded_events": 11849,
+    "included_locations": 375,
+    "excluded_locations": 121,
+    "modelled_classes": 1090,
+    "cross_campus_classes": 13,
+    "student_movements": 7145584,
+    "routed_student_movements": 7136120,
+    "intercampus_student_movements": 9464,
+    "unroutable_student_movements": 0,
+    "virtual_connector_student_movements": 0,
+    "user_route_student_movements": 2461844.0,
+    "roads_with_flow": 219,
+    "concurrent_location_conflicts": 422
+  },
+  "method": {
+    "seed": "CSU-traffic-2026-09-26",
+    "movement_rule": "Each class starts and ends each weekday at its assigned dorm. It returns to the dorm after every class whose next slot is empty; adjacent class slots are connected directly.",
+    "scope": "New Campus and South Campus only",
+    "intercampus_handling": "Counted as inter-campus movements but not assigned to a road because the supplied graph has no connector between campus boundaries.",
+    "coordinate_note": "科教南楼、科教北楼 have no named OSM footprint in the source map; their routes use the nearby named South Campus teaching-building proxy.",
+    "topology_note": "Two source-road endpoints less than 30 m apart are joined as unrendered walking connectors, avoiding a false break in the extracted OSM topology.",
+    "field_rule": "E001–E006 and E004–E016 are connected as supplied. E019 (the pedestrian overpass) is excluded from vehicle-route planning and vehicle heat.",
+    "user_route_rule": "For trips using E418, the shared trunk of the original A006–J062 corridor, 50% stays on the base corridor and 50% uses the user-marked alternative U001."
+  },
+  "top_edges": [
+    {
+      "id": "C002",
+      "name": "现场补充连接 E004—E016",
+      "highway": "residential",
+      "length_m": 26.31,
+      "coordinates": [
+        [
+          112.92901278568543,
+          28.16094478978401
+        ],
+        [
+          112.92920678422865,
+          28.161109056159127
+        ]
+      ],
+      "semester_person_trips": 4372292.0,
+      "peak_slot_person_trips": 19220.0
+    },
+    {
+      "id": "E004",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 268.45,
+      "coordinates": [
+        [
+          112.92901278568543,
+          28.16094478978401
+        ],
+        [
+          112.9289922,
+          28.1609248
+        ],
+        [
+          112.9289159,
+          28.1608415
+        ],
+        [
+          112.9288499,
+          28.1607528
+        ],
+        [
+          112.928734,
+          28.1604947
+        ],
+        [
+          112.928672,
+          28.1603442
+        ],
+        [
+          112.9286497,
+          28.1602537
+        ],
+        [
+          112.9286283,
+          28.1600987
+        ],
+        [
+          112.9286151,
+          28.1599186
+        ],
+        [
+          112.9286192,
+          28.1597151
+        ],
+        [
+          112.9286446,
+          28.1595422
+        ],
+        [
+          112.9286893,
+          28.1593549
+        ],
+        [
+          112.9287243,
+          28.1592488
+        ],
+        [
+          112.9287574,
+          28.1591488
+        ],
+        [
+          112.9288336,
+          28.1589831
+        ],
+        [
+          112.9289363,
+          28.1588155
+        ],
+        [
+          112.9290023,
+          28.1587184
+        ],
+        [
+          112.9290284,
+          28.1586882
+        ]
+      ],
+      "semester_person_trips": 4372292.0,
+      "peak_slot_person_trips": 19220.0
+    },
+    {
+      "id": "E016",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 54.08,
+      "coordinates": [
+        [
+          112.92920678422865,
+          28.161109056159127
+        ],
+        [
+          112.929217,
+          28.1611154
+        ],
+        [
+          112.9292514,
+          28.1611433
+        ],
+        [
+          112.9292848,
+          28.1611749
+        ],
+        [
+          112.9293183,
+          28.1612083
+        ],
+        [
+          112.929567,
+          28.1614757
+        ]
+      ],
+      "semester_person_trips": 4372292.0,
+      "peak_slot_person_trips": 19220.0
+    },
+    {
+      "id": "E350",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 237.99,
+      "coordinates": [
+        [
+          112.9300204,
+          28.1571689
+        ],
+        [
+          112.9300339,
+          28.1570697
+        ],
+        [
+          112.930044,
+          28.1568555
+        ],
+        [
+          112.9300379,
+          28.1566826
+        ],
+        [
+          112.9300196,
+          28.1565454
+        ],
+        [
+          112.9299607,
+          28.1562641
+        ],
+        [
+          112.9299089,
+          28.1561144
+        ],
+        [
+          112.9298458,
+          28.155963
+        ],
+        [
+          112.9297737,
+          28.1558223
+        ],
+        [
+          112.9296964,
+          28.1556816
+        ],
+        [
+          112.9295459,
+          28.1553573
+        ],
+        [
+          112.9294706,
+          28.1551189
+        ]
+      ],
+      "semester_person_trips": 4356288.0,
+      "peak_slot_person_trips": 19164.0
+    },
+    {
+      "id": "E351",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 199.19,
+      "coordinates": [
+        [
+          112.9300204,
+          28.1571689
+        ],
+        [
+          112.9299851,
+          28.1573528
+        ],
+        [
+          112.9299454,
+          28.1574792
+        ],
+        [
+          112.9298987,
+          28.1575984
+        ],
+        [
+          112.9298448,
+          28.1577113
+        ],
+        [
+          112.9297899,
+          28.1578331
+        ],
+        [
+          112.9297107,
+          28.1579622
+        ],
+        [
+          112.9296161,
+          28.1580912
+        ],
+        [
+          112.9295054,
+          28.158222
+        ],
+        [
+          112.9293763,
+          28.1583475
+        ],
+        [
+          112.9292167,
+          28.1584917
+        ],
+        [
+          112.9291069,
+          28.1585975
+        ],
+        [
+          112.9290284,
+          28.1586882
+        ]
+      ],
+      "semester_person_trips": 4356288.0,
+      "peak_slot_person_trips": 19164.0
+    },
+    {
+      "id": "E352",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 88.66,
+      "coordinates": [
+        [
+          112.9293304,
+          28.1546601
+        ],
+        [
+          112.9292577,
+          28.154463
+        ],
+        [
+          112.9292109,
+          28.1543129
+        ],
+        [
+          112.9291734,
+          28.1541722
+        ],
+        [
+          112.9291399,
+          28.1540114
+        ],
+        [
+          112.9291265,
+          28.1538865
+        ]
+      ],
+      "semester_person_trips": 4356288.0,
+      "peak_slot_person_trips": 19164.0
+    },
+    {
+      "id": "E353",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 52.89,
+      "coordinates": [
+        [
+          112.9293304,
+          28.1546601
+        ],
+        [
+          112.9294706,
+          28.1551189
+        ]
+      ],
+      "semester_person_trips": 4356288.0,
+      "peak_slot_person_trips": 19164.0
+    },
+    {
+      "id": "E338",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 163.48,
+      "coordinates": [
+        [
+          112.9309439,
+          28.1528602
+        ],
+        [
+          112.9292783,
+          28.1528491
+        ]
+      ],
+      "semester_person_trips": 3504485.0,
+      "peak_slot_person_trips": 15222.0
+    },
+    {
+      "id": "E339",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 186.64,
+      "coordinates": [
+        [
+          112.9309439,
+          28.1528602
+        ],
+        [
+          112.9328454,
+          28.152876
+        ]
+      ],
+      "semester_person_trips": 3504485.0,
+      "peak_slot_person_trips": 15222.0
+    },
+    {
+      "id": "E340",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 94.12,
+      "coordinates": [
+        [
+          112.9328454,
+          28.152876
+        ],
+        [
+          112.9338042,
+          28.1528885
+        ]
+      ],
+      "semester_person_trips": 3504485.0,
+      "peak_slot_person_trips": 15222.0
+    },
+    {
+      "id": "E235",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 69.94,
+      "coordinates": [
+        [
+          112.9351334,
+          28.1535344
+        ],
+        [
+          112.9349818,
+          28.1529205
+        ]
+      ],
+      "semester_person_trips": 3188615.0,
+      "peak_slot_person_trips": 13790.0
+    },
+    {
+      "id": "E245",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 3.45,
+      "coordinates": [
+        [
+          112.933992,
+          28.152891
+        ],
+        [
+          112.9340271,
+          28.1528921
+        ]
+      ],
+      "semester_person_trips": 3188615.0,
+      "peak_slot_person_trips": 13790.0
+    },
+    {
+      "id": "E246",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 18.43,
+      "coordinates": [
+        [
+          112.933992,
+          28.152891
+        ],
+        [
+          112.9338042,
+          28.1528885
+        ]
+      ],
+      "semester_person_trips": 3188615.0,
+      "peak_slot_person_trips": 13790.0
+    },
+    {
+      "id": "E421",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 93.76,
+      "coordinates": [
+        [
+          112.9340271,
+          28.1528921
+        ],
+        [
+          112.9349818,
+          28.1529205
+        ]
+      ],
+      "semester_person_trips": 3188615.0,
+      "peak_slot_person_trips": 13790.0
+    },
+    {
+      "id": "E418",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 117.52,
+      "coordinates": [
+        [
+          112.9292783,
+          28.1528491
+        ],
+        [
+          112.9292486,
+          28.152922
+        ],
+        [
+          112.9291976,
+          28.1530592
+        ],
+        [
+          112.9291601,
+          28.1532058
+        ],
+        [
+          112.9291305,
+          28.1533847
+        ],
+        [
+          112.9291184,
+          28.1534888
+        ],
+        [
+          112.9291184,
+          28.1536307
+        ],
+        [
+          112.9291171,
+          28.1537986
+        ],
+        [
+          112.9291265,
+          28.1538865
+        ]
+      ],
+      "semester_person_trips": 2461844.0,
+      "peak_slot_person_trips": 10973.0
+    },
+    {
+      "id": "U001",
+      "name": "用户标注替代走廊（50% 分流）",
+      "highway": "user_route",
+      "length_m": 1194.65,
+      "coordinates": [
+        [
+          112.929171653,
+          28.161137216
+        ],
+        [
+          112.930694948,
+          28.1596872135
+        ],
+        [
+          112.9327365939,
+          28.1587872117
+        ],
+        [
+          112.9356856373,
+          28.1583872104
+        ],
+        [
+          112.9357423504,
+          28.1570872086
+        ],
+        [
+          112.9358217485,
+          28.1555872064
+        ],
+        [
+          112.9359113548,
+          28.1542402045
+        ]
+      ],
+      "semester_person_trips": 2461844.0,
+      "peak_slot_person_trips": 10973.0
+    },
+    {
+      "id": "E077",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 88.94,
+      "coordinates": [
+        [
+          112.9304732,
+          28.1614799
+        ],
+        [
+          112.929567,
+          28.1614757
+        ]
+      ],
+      "semester_person_trips": 2354784.0,
+      "peak_slot_person_trips": 10432.0
+    },
+    {
+      "id": "E400",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 40.71,
+      "coordinates": [
+        [
+          112.9353108,
+          28.1542315
+        ],
+        [
+          112.93522,
+          28.1538747
+        ]
+      ],
+      "semester_person_trips": 2080877.0,
+      "peak_slot_person_trips": 9225.0
+    },
+    {
+      "id": "E402",
+      "name": "未命名道路",
+      "highway": "unclassified",
+      "length_m": 113.54,
+      "coordinates": [
+        [
+          112.9353108,
+          28.1542315
+        ],
+        [
+          112.935421,
+          28.154228
+        ],
+        [
+          112.9358623,
+          28.1542105
+        ],
+        [
+          112.9358976,
+          28.1542095
+        ],
+        [
+          112.9361646,
+          28.1542021
+        ],
+        [
+          112.936359,
+          28.1541966
+        ],
+        [
+          112.9364668,
+          28.1541936
+        ]
+      ],
+      "semester_person_trips": 2080877.0,
+      "peak_slot_person_trips": 9225.0
+    },
+    {
+      "id": "E236",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 38.82,
+      "coordinates": [
+        [
+          112.9351334,
+          28.1535344
+        ],
+        [
+          112.93522,
+          28.1538747
+        ]
+      ],
+      "semester_person_trips": 2060900.0,
+      "peak_slot_person_trips": 9090.0
+    },
+    {
+      "id": "E032",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 9.41,
+      "coordinates": [
+        [
+          112.9374901,
+          28.1537796
+        ],
+        [
+          112.9374914,
+          28.1536951
+        ]
+      ],
+      "semester_person_trips": 1625791.0,
+      "peak_slot_person_trips": 7808.0
+    },
+    {
+      "id": "E446",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 16.94,
+      "coordinates": [
+        [
+          112.9374938,
+          28.1535429
+        ],
+        [
+          112.9374914,
+          28.1536951
+        ]
+      ],
+      "semester_person_trips": 1625791.0,
+      "peak_slot_person_trips": 7808.0
+    },
+    {
+      "id": "E497",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 3.56,
+      "coordinates": [
+        [
+          112.929567,
+          28.1614757
+        ],
+        [
+          112.9295373,
+          28.1614941
+        ]
+      ],
+      "semester_person_trips": 1613880.0,
+      "peak_slot_person_trips": 7381.0
+    },
+    {
+      "id": "E030",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 7.13,
+      "coordinates": [
+        [
+          112.9374175,
+          28.1537796
+        ],
+        [
+          112.9374901,
+          28.1537796
+        ]
+      ],
+      "semester_person_trips": 1608184.0,
+      "peak_slot_person_trips": 7583.0
+    },
+    {
+      "id": "E078",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 35.98,
+      "coordinates": [
+        [
+          112.9304732,
+          28.1614799
+        ],
+        [
+          112.9304399,
+          28.1613425
+        ],
+        [
+          112.9304186,
+          28.1612109
+        ],
+        [
+          112.930417,
+          28.1611611
+        ]
+      ],
+      "semester_person_trips": 1587618.0,
+      "peak_slot_person_trips": 6872.0
+    },
+    {
+      "id": "E225",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 38.19,
+      "coordinates": [
+        [
+          112.9375118,
+          28.1524267
+        ],
+        [
+          112.9375063,
+          28.1527697
+        ]
+      ],
+      "semester_person_trips": 1466350.0,
+      "peak_slot_person_trips": 6932.0
+    },
+    {
+      "id": "E092",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 38.81,
+      "coordinates": [
+        [
+          112.9296027,
+          28.1621178
+        ],
+        [
+          112.929652,
+          28.1620839
+        ],
+        [
+          112.9297106,
+          28.1620445
+        ],
+        [
+          112.9297586,
+          28.1620145
+        ],
+        [
+          112.9298339,
+          28.1619758
+        ],
+        [
+          112.92989,
+          28.16195
+        ],
+        [
+          112.9299338,
+          28.1619289
+        ]
+      ],
+      "semester_person_trips": 1458340.0,
+      "peak_slot_person_trips": 6520.0
+    },
+    {
+      "id": "E498",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 62.1,
+      "coordinates": [
+        [
+          112.9299338,
+          28.1619289
+        ],
+        [
+          112.9295373,
+          28.1614941
+        ]
+      ],
+      "semester_person_trips": 1458340.0,
+      "peak_slot_person_trips": 6520.0
+    },
+    {
+      "id": "E417",
+      "name": "未命名道路",
+      "highway": "residential",
+      "length_m": 15.71,
+      "coordinates": [
+        [
+          112.9293357,
+          28.1527174
+        ],
+        [
+          112.9293103,
+          28.1527707
+        ],
+        [
+          112.9292783,
+          28.1528491
+        ]
+      ],
+      "semester_person_trips": 1419203.0,
+      "peak_slot_person_trips": 8772.0
+    },
+    {
+      "id": "E226",
+      "name": "未命名道路",
+      "highway": "service",
+      "length_m": 242.07,
+      "coordinates": [
+        [
+          112.9375118,
+          28.1524267
+        ],
+        [
+          112.9350458,
+          28.1523937
+        ]
+      ],
+      "semester_person_trips": 1384788.0,
+      "peak_slot_person_trips": 6872.0
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+/* 事件与校历页样式：沿用路线页的配色（绿 #167052 / 灰 #718178） */
+.page{padding:24rpx 28rpx 60rpx;background:#eef3ef;min-height:100vh;box-sizing:border-box}
+.back{font-size:26rpx;color:#167052;padding:10rpx 0}
+.section-title{font-size:38rpx;font-weight:700;color:#1d3b31;margin:6rpx 0 20rpx}
+
+.tabs{display:flex;gap:12rpx;margin-bottom:16rpx}
+.tab{flex:1;text-align:center;padding:16rpx 8rpx;font-size:26rpx;color:#4c6b5f;background:#e2ece6;border-radius:14rpx}
+.tab-on{background:#167052;color:#fff;font-weight:600}
+
+.card{background:#fff;border-radius:18rpx;padding:24rpx;margin-bottom:20rpx;box-shadow:0 2rpx 10rpx rgba(23,80,58,.06)}
+.row-head{display:flex;align-items:center;flex-wrap:wrap;gap:12rpx;margin-bottom:12rpx}
+.row-title{font-size:30rpx;font-weight:600;color:#1d3b31}
+.badge{font-size:22rpx;color:#167052;background:#e6f2ea;border-radius:10rpx;padding:4rpx 14rpx}
+.badge-warn{color:#b3261e;background:#fdecea}
+.row-hint{font-size:22rpx;color:#718178;margin-top:8rpx;line-height:1.5}
+.row-actions{display:flex;flex-wrap:wrap;gap:12rpx;margin-top:16rpx}
+.mini-wrap{flex:1;min-width:200rpx}
+.mini{flex:1;min-width:180rpx;margin:0;padding:14rpx 10rpx;font-size:24rpx;line-height:1.4;color:#167052;background:#f2f8f4;border:2rpx solid #c9ddd0;border-radius:14rpx;text-align:center}
+button.mini{margin:0;padding:14rpx 10rpx;font-size:24rpx;line-height:1.4;background:#f2f8f4;color:#167052;border:2rpx solid #c9ddd0;border-radius:14rpx}
+button.mini::after{border:none}
+.mini-primary{background:#167052;color:#fff;border-color:#167052}
+.mini-danger{color:#b3261e;background:#fdf1f0;border-color:#f0c7c3}
+.tip{font-size:22rpx;color:#5d7a6d;background:#f4f8f5;border-left:8rpx solid #cfe2d7;border-radius:8rpx;padding:14rpx 16rpx;margin-top:12rpx;line-height:1.6}
+.tip text{color:#167052}
+
+.fl{font-size:24rpx;color:#2c4a3f;font-weight:600;margin:20rpx 0 8rpx}
+.inp{border:2rpx solid #d8e5dd;border-radius:12rpx;padding:14rpx 16rpx;font-size:26rpx;background:#fbfdfc}
+.sum{margin-top:20rpx;padding:16rpx;background:#f2f8f4;border-radius:12rpx;font-size:23rpx;color:#2c4a3f;line-height:1.8}
+.error{margin-top:12rpx;font-size:22rpx;color:#b3261e;line-height:1.5}
+
+.chips{display:flex;flex-wrap:wrap;gap:10rpx;margin-top:8rpx}
+.chip{font-size:22rpx;padding:8rpx 16rpx;border-radius:20rpx;background:#f2f4f3;color:#4c6b5f;border:2rpx solid transparent}
+.chip-on{background:#167052;color:#fff}
+.chip-part{background:#d9ece3;color:#167052;border-color:#167052}
+.chip-plain{background:#fff;border-color:#d8e5dd}
+.chip-sm{font-size:20rpx;padding:6rpx 12rpx}
+
+.grp-box{max-height:560rpx;margin-top:12rpx}
+.grp{padding:8rpx 0;border-bottom:2rpx solid #f0f4f1}
+.grp-row{display:flex;align-items:center;gap:12rpx}
+.grp-exp{font-size:22rpx;color:#167052;padding:6rpx 10rpx}
+.grp-sub{display:flex;flex-wrap:wrap;gap:8rpx;margin-top:8rpx;padding-left:12rpx}
+
+.ev{border-top:2rpx solid #eef3ef;padding-top:16rpx;margin-top:16rpx}
+.ev-head{display:flex;align-items:center;gap:12rpx}
+.ev-title{font-size:28rpx;font-weight:600;color:#1d3b31}
+.ev-type{font-size:20rpx;color:#718178;background:#f2f4f3;border-radius:8rpx;padding:2rpx 10rpx}
+.ev-meta{font-size:23rpx;color:#4c6b5f;margin-top:6rpx;line-height:1.5}
+.ev-meta.dim2{color:#8a9a92;font-size:21rpx}
+.ev-note{font-size:21rpx;color:#8a9a92;margin-top:6rpx}
+.strong{color:#167052;font-weight:600}
+.ov{border-top:2rpx solid #eef3ef;padding-top:12rpx;margin-top:12rpx}

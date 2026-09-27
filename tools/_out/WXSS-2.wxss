@@ -1,0 +1,31 @@
+.%%HERESUFFIX%%row-head{display:flex;align-items:center;margin-bottom:%%?14rpx?%%;flex-wrap:wrap}
+.%%HERESUFFIX%%row-title{font-size:%%?28rpx?%%;font-weight:600;color:#146b55}
+.%%HERESUFFIX%%badge{margin-left:%%?14rpx?%%;font-size:%%?20rpx?%%;color:#167052;background:#e6f2ec;border-radius:%%?20rpx?%%;padding:%%?4rpx?%% %%?14rpx?%%}
+.%%HERESUFFIX%%badge-warn{color:#8a4b00;background:#fff0d6}
+.%%HERESUFFIX%%row-actions{display:flex;flex-wrap:wrap;gap:%%?12rpx?%%;margin-top:%%?20rpx?%%}
+.%%HERESUFFIX%%mini-wrap{flex:1;min-width:%%?200rpx?%%;margin-top:%%?16rpx?%%}
+.%%HERESUFFIX%%mini{flex:1;min-width:%%?200rpx?%%;margin:0;padding:%%?14rpx?%% %%?8rpx?%%;font-size:%%?24rpx?%%;line-height:1.4;color:#167052;background:#f2f8f4;border:%%?2rpx?%% solid #c9ddd0;border-radius:%%?14rpx?%%;text-align:center}
+wx-button.%%HERESUFFIX%%mini{margin:0;padding:%%?14rpx?%% %%?8rpx?%%;font-size:%%?24rpx?%%;line-height:1.4;background:#f2f8f4;color:#167052;border:%%?2rpx?%% solid #c9ddd0;border-radius:%%?14rpx?%%}
+wx-button.%%HERESUFFIX%%mini::after{border:none}
+.%%HERESUFFIX%%eff{display:flex;flex-wrap:wrap;gap:%%?10rpx?%%;margin-top:%%?18rpx?%%}
+.%%HERESUFFIX%%eff-item{display:flex;align-items:center;background:#f4f4f4;border-radius:%%?10rpx?%%;padding:%%?8rpx?%% %%?14rpx?%%}
+.%%HERESUFFIX%%eff-kind{font-size:%%?20rpx?%%;color:#fff;background:#5a6b63;border-radius:%%?8rpx?%%;padding:%%?3rpx?%% %%?10rpx?%%;margin-right:%%?10rpx?%%}
+.%%HERESUFFIX%%eff-name{font-size:%%?21rpx?%%;color:#4a5a53}
+.%%HERESUFFIX%%empty{font-size:%%?24rpx?%%;color:#8a9a92;text-align:center;padding:%%?40rpx?%% 0}
+.%%HERESUFFIX%%rep{border:%%?2rpx?%% solid #e4eee8;border-radius:%%?14rpx?%%;padding:%%?20rpx?%%;margin-top:%%?18rpx?%%}
+.%%HERESUFFIX%%rep-top{display:flex;align-items:center}
+.%%HERESUFFIX%%rep-cat{font-size:%%?21rpx?%%;color:#fff;border-radius:%%?10rpx?%%;padding:%%?5rpx?%% %%?14rpx?%%}
+.%%HERESUFFIX%%rep-status{margin-left:%%?12rpx?%%;font-size:%%?20rpx?%%;border-radius:%%?10rpx?%%;padding:%%?5rpx?%% %%?14rpx?%%}
+.%%HERESUFFIX%%status-pending{color:#8a4b00;background:#fff0d6}
+.%%HERESUFFIX%%status-verified{color:#146b55;background:#e6f2ec}
+.%%HERESUFFIX%%status-rejected{color:#8a8a8a;background:#efefef}
+.%%HERESUFFIX%%rep-time{margin-left:auto;font-size:%%?20rpx?%%;color:#93a29a}
+.%%HERESUFFIX%%rep-body{display:flex;flex-direction:column;margin-top:%%?14rpx?%%}
+.%%HERESUFFIX%%rep-road{font-size:%%?25rpx?%%;color:#1c3b31}
+.%%HERESUFFIX%%rep-sub{font-size:%%?21rpx?%%;color:#718178;margin-top:%%?6rpx?%%}
+.%%HERESUFFIX%%rep-note{font-size:%%?22rpx?%%;color:#4a5a53;margin-top:%%?8rpx?%%}
+.%%HERESUFFIX%%rep-actions{display:flex;gap:%%?12rpx?%%;margin-top:%%?16rpx?%%}
+.%%HERESUFFIX%%rep-btn{flex:1;text-align:center;font-size:%%?23rpx?%%;border-radius:%%?12rpx?%%;padding:%%?14rpx?%% 0}
+.%%HERESUFFIX%%rep-btn.%%HERESUFFIX%%ok{color:#fff;background:#167052}
+.%%HERESUFFIX%%rep-btn.%%HERESUFFIX%%no{color:#8a4b00;background:#fff0d6}
+.%%HERESUFFIX%%rep-btn.%%HERESUFFIX%%del{color:#b3261e;background:#fdecea}

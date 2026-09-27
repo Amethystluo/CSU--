@@ -1,0 +1,34 @@
+<view class="index-bg">
+  <!-- 顶部渐变 Hero 区 -->
+  <view class="hero">
+    <view class="hero-badge">🌆 CSU 智慧校园</view>
+    <view class="hero-title">电动车大学跑路教学</view>
+  <view class="hero-sub">新校区 · 南校区｜预测热度与规划路线</view>
+  </view>
+
+  <!-- 功能宫格 -->
+  <view class="grid-section">
+    <view class="section-label">
+      <text class="section-title">功能服务</text>
+      <text class="section-hint">点击进入</text>
+    </view>
+    <view class="nav-grid">
+      <view
+        wx:for="{{navs}}"
+        wx:key="key"
+        class="nav-tile"
+        data-key="{{item.key}}"
+        bindtap="go"
+      >
+        <view class="tile-icon" style="background:{{item.color}}1a;color:{{item.color}}">{{item.icon}}</view>
+        <view class="tile-title">{{item.title}}</view>
+        <view class="tile-sub">{{item.sub}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部说明 -->
+  <view class="foot-tip">
+    <text>两个交通入口均基于课表模拟得到的预测通行热度，少人路线会优先避开高热度道路，不代表实时人流。</text>
+  </view>
+</view>

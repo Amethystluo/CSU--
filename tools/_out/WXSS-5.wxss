@@ -1,0 +1,46 @@
+.%%HERESUFFIX%%farm-hero{background:linear-gradient(135deg,#7a5c3a,#a5824f 60%,#c3a169);color:#fff;border-radius:%%?24rpx?%%;padding:%%?34rpx?%% %%?32rpx?%%;margin-bottom:%%?18rpx?%%;position:relative;overflow:hidden}
+.%%HERESUFFIX%%farm-hero::after{content:'';position:absolute;right:%%?-40rpx?%%;top:%%?-50rpx?%%;width:%%?200rpx?%%;height:%%?200rpx?%%;border-radius:50%;background:rgba(255,255,255,.10)}
+.%%HERESUFFIX%%farm-hero::before{content:'';position:absolute;right:%%?60rpx?%%;bottom:%%?-80rpx?%%;width:%%?160rpx?%%;height:%%?160rpx?%%;border-radius:50%;background:rgba(255,255,255,.07)}
+.%%HERESUFFIX%%farm-hero-title{font-size:%%?40rpx?%%;font-weight:800;letter-spacing:%%?2rpx?%%;position:relative;z-index:1}
+.%%HERESUFFIX%%farm-hero-sub{font-size:%%?24rpx?%%;opacity:.92;margin-top:%%?10rpx?%%;letter-spacing:%%?1rpx?%%;position:relative;z-index:1}
+.%%HERESUFFIX%%res-bar{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:%%?18rpx?%%;padding:%%?18rpx?%% %%?24rpx?%%;margin-bottom:%%?12rpx?%%}
+.%%HERESUFFIX%%res-item{text-align:center}
+.%%HERESUFFIX%%res-label{display:block;font-size:%%?20rpx?%%;color:#8a9e92}
+.%%HERESUFFIX%%res-value{display:block;font-size:%%?30rpx?%%;font-weight:700;color:#167052;margin-top:%%?4rpx?%%}
+.%%HERESUFFIX%%exp-bar{width:100%;height:%%?18rpx?%%;background:#d9e8df;border-radius:%%?10rpx?%%;overflow:hidden}
+.%%HERESUFFIX%%exp-fill{height:100%;background:linear-gradient(90deg,#167052,#2e9e73);border-radius:%%?10rpx?%%;transition:width .4s}
+.%%HERESUFFIX%%level-text{font-size:%%?22rpx?%%;color:#6c7d75;margin-top:%%?8rpx?%%}
+.%%HERESUFFIX%%farm-tabs{display:flex;gap:%%?24rpx?%%;margin:%%?24rpx?%% 0 %%?16rpx?%%;font-size:%%?30rpx?%%;color:#6c7d75;border-bottom:%%?2rpx?%% solid #d6e6dc;padding-bottom:%%?12rpx?%%}
+.%%HERESUFFIX%%farm-tabs .%%HERESUFFIX%%tab{padding:0 %%?4rpx?%% %%?8rpx?%%}
+.%%HERESUFFIX%%farm-tabs .%%HERESUFFIX%%active{color:#167052;font-weight:700;border-bottom:%%?4rpx?%% solid #167052;margin-bottom:%%?-14rpx?%%}
+.%%HERESUFFIX%%field-tip,.%%HERESUFFIX%%shop-tip{font-size:%%?24rpx?%%;color:#687a70;margin-bottom:%%?18rpx?%%;line-height:1.7}
+.%%HERESUFFIX%%grid{display:grid;grid-template-columns:repeat(3,1fr);gap:%%?14rpx?%%}
+.%%HERESUFFIX%%plot{height:%%?190rpx?%%;background:#8dcd8e;border:%%?2rpx?%% solid #6fb276;border-radius:%%?18rpx?%%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.%%HERESUFFIX%%cell-empty{color:#4a7a52;font-size:%%?22rpx?%%}
+.%%HERESUFFIX%%cell-crop{text-align:center}
+.%%HERESUFFIX%%crop-emoji{font-size:%%?52rpx?%%}
+.%%HERESUFFIX%%crop-name{font-size:%%?20rpx?%%;color:#2f5b34;font-weight:600}
+.%%HERESUFFIX%%crop-progress{font-size:%%?18rpx?%%;color:#3f6f44}
+.%%HERESUFFIX%%crop-ripe{font-size:%%?18rpx?%%;color:#e53935;font-weight:700}
+.%%HERESUFFIX%%crop-withered{font-size:%%?18rpx?%%;color:#8d8d8d}
+.%%HERESUFFIX%%action-panel{background:#fff;border-radius:%%?18rpx?%%;padding:%%?24rpx?%%;margin-top:%%?18rpx?%%}
+.%%HERESUFFIX%%action-title{font-size:%%?28rpx?%%;color:#183744;font-weight:600;margin-bottom:%%?16rpx?%%}
+.%%HERESUFFIX%%action-btns{display:flex;gap:%%?12rpx?%%;flex-wrap:wrap}
+.%%HERESUFFIX%%action-btn{padding:%%?18rpx?%% %%?30rpx?%%;border-radius:%%?14rpx?%%;background:#e6f2ec;color:#167052;font-size:%%?26rpx?%%}
+.%%HERESUFFIX%%harvest-btn{background:#ffe9c7;color:#8a5a00}
+.%%HERESUFFIX%%clear-btn{background:#fdecec;color:#b55a5a}
+.%%HERESUFFIX%%inventory{display:flex;flex-direction:column;gap:%%?12rpx?%%}
+.%%HERESUFFIX%%inv-item{display:flex;align-items:center;gap:%%?12rpx?%%;padding:%%?14rpx?%%;background:#f2f8f4;border-radius:%%?12rpx?%%}
+.%%HERESUFFIX%%inv-emoji{font-size:%%?34rpx?%%}
+.%%HERESUFFIX%%inv-name{flex:1;font-size:%%?26rpx?%%;color:#183744}
+.%%HERESUFFIX%%inv-sell{font-size:%%?22rpx?%%;color:#8a9e92}
+.%%HERESUFFIX%%inv-sell-btn{padding:%%?8rpx?%% %%?18rpx?%%;background:#167052;color:#fff;border-radius:%%?12rpx?%%;font-size:%%?22rpx?%%}
+.%%HERESUFFIX%%crop-list{display:flex;flex-direction:column;gap:%%?14rpx?%%}
+.%%HERESUFFIX%%crop-card{display:flex;align-items:center;gap:%%?18rpx?%%;background:#fff;border-radius:%%?18rpx?%%;padding:%%?20rpx?%%}
+.%%HERESUFFIX%%crop-card-emoji{font-size:%%?52rpx?%%;width:%%?70rpx?%%;text-align:center}
+.%%HERESUFFIX%%crop-card-info{flex:1}
+.%%HERESUFFIX%%crop-card-name{display:block;font-size:%%?28rpx?%%;color:#183744;font-weight:600}
+.%%HERESUFFIX%%crop-card-desc{display:block;font-size:%%?20rpx?%%;color:#8a9e92;margin-top:%%?4rpx?%%}
+.%%HERESUFFIX%%crop-card-level{display:block;font-size:%%?20rpx?%%;color:#e53935}
+.%%HERESUFFIX%%buy-btn{background:#167052;color:#fff;border:0;border-radius:%%?12rpx?%%;font-size:%%?24rpx?%%;padding:%%?14rpx?%% %%?24rpx?%%}
+.%%HERESUFFIX%%shop-donate{margin-top:%%?24rpx?%%}

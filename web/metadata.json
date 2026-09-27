@@ -1,0 +1,19 @@
+{
+  "source": "https://api.openstreetmap.org/api/0.6/map?bbox=112.925,28.149,112.946,28.169",
+  "download_date": "2026-09-26",
+  "osm_timestamp": null,
+  "crs": "EPSG:4326 / WGS84",
+  "license": "ODbL 1.0",
+  "campus_ids": [
+    533289733,
+    966198402
+  ],
+  "features": 520,
+  "road_features": 240,
+  "bounds": [
+    112.9254774,
+    28.1493747,
+    112.9456559,
+    28.1686872
+  ]
+}
